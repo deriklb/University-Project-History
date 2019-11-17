@@ -1,0 +1,52 @@
+import csv
+import numpy as np
+import matplotlib.pyplot as plt
+import neurolab as nl
+import pandas as pd
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+
+######  reaing a comma seperated value file from the computer
+pd.read_csv('imports-85.csv', delimiter = ',')
+
+
+###### Read file into a Pandas dataframe
+from pandas import DataFrame, read_csv
+f = 'imports-85.csv'
+df = read_csv(f)
+df=df[0:50]
+print(df.corr())
+
+sns.set(style="white")
+
+####### Compute the correlation matrix
+corr = df.corr()
+
+####### Generate a mask for the upper triangle
+mask = np.zeros_like(corr, dtype=np.bool)
+mask[np.triu_indices_from(mask)] = True
+
+####### Set up the matplotlib figure
+f, ax = plt.subplots(figsize=(11, 9))
+
+####### Generate a custom diverging colormap
+cmap = sns.diverging_palette(220, 10, as_cmap=True)
+
+####### Draw the heatmap with the mask and correct aspect ratio
+sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+            square=True, linewidths=0.1, cbar_kws={"shrink": .5})
+            
+
+####### create an object of the information, print it, and call a count of what we imported 
+imports = pd.read_csv('imports-85.csv', delimiter = ',')
+imports.count()
+print(df.info)
+
+
+######## splits the data into 20% for testing and 80% for training
+import pandas as pd
+from sklearn.model_selection import train_test_split
+dataset_url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/autos/imports-85.data'
+data = pd.read_csv(dataset_url)
+
+train_test_split(df, test_size=0.2)
