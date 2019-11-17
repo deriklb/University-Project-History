@@ -1,0 +1,67 @@
+upperCaseString equ 0x20003000 ;destination string
+	AREA asml, CODE
+		ENTRY
+		EXPORT __main
+			
+			
+;Student Name: Derik Trumble
+;Student ID: -------
+			
+			
+__main
+	ldr r2, =upperCaseString       ;string that needs to be converted
+	adr r1, myString               ;this is where the uppercase words go
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+nextCharacter
+	ldrb r0, [r1], #1              ;load r0 with the string to convert to upppercase
+	cmp r0, #0x00000000            ; compare the string to 0 to see if it is a space character
+	beq stop                       ; if the next character is a space, then stop.  we dont need to convert a space character
+	bl toUppercase                 ; go to the uppercase routine
+	str r0, [r2], #1               ; store r0 into r2 to save the uppercase string
+	B nextCharacter
+stop B stop
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	ALIGN													   ;;
+myString DCB "Convert me to Uppercase", 0                      ;;
+	ALIGN													   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+toUppercase
+	PUSH {r1-r12, lr}; 
+	mov r1, 0x61; 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+searchloop
+	cmp r1, #0x7B                       ; choosing the curley brace
+	beq NotLowerCase                    ; if mystring is equal to a brace, go to not lowercase to being a search
+	cmp r0, r1                          ; compare 
+	add r1, #1                          ; incriment thru mystring by 1 letter
+	subeq r0, #0x20                     ; this is where the conversion happens by subtracting 0x20
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+NotLowerCase
+	bne searchloop
+	POP {r1-r12, pc}
+	POP {r1-r12, pc}
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	END
