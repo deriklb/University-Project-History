@@ -1,0 +1,265 @@
+using System;
+
+namespace ClassLibrary_1
+{
+    public class Time2 : IComparable <Time2>
+    {
+
+        private int hour;
+        private int second;
+        private int minute;
+
+
+
+
+
+
+
+        //constructor ex 1
+        public Time2(int hour = 0, int minute = 0, int second = 0)
+        {
+            SetTime(hour, minute, second);
+        }
+
+
+        //constructor ex 2
+        public Time2(Time2 time)
+
+          : this(time.Hour, time.Minute, time.Second) { }
+
+
+
+
+
+        public void SetTime(int hour, int minute, int second)
+        {
+            Hour = hour;
+            Minute = minute;
+            Second = second;
+        }
+
+
+/////////////////////////////////////////////////part b////////////////////////////////////////////////////////
+        public void addtime(int h, int m, int s)
+        {
+            Hour = Hour + h;
+            Minute = Minute + m;
+            Second = Second + s;
+
+            Console.WriteLine( $"new time value is {Hour:D2}:{Minute:D2}:{Second:D2}");
+       
+        }
+
+        public void addtime(Time2 attime)
+        {
+            Hour = attime.Hour + Hour;
+            Minute = attime.Minute + Minute;
+            Second = attime.Second + Second;
+
+
+            Console.WriteLine($"new time value is {Hour:D2}:{Minute:D2}:{Second:D2}");
+
+        }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        public int Hour
+        {
+            get
+            {
+                return hour;
+            }
+
+            set
+            {
+                if (value < 0 || value > 23)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value),
+                    value, $"{nameof(Hour)} must be 0-23");
+                }
+
+                hour = value;
+            }
+        }
+
+
+
+
+
+        public int Minute
+        {
+            get
+            {
+                return minute;
+            }
+
+            set
+            {
+                if (value < 0 || value > 59)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value),
+                    value, $"{nameof(Minute)} must be 0-59");
+                }
+
+                minute = value;
+            }
+        }
+
+
+
+
+
+        public int Second
+        {
+            get
+            {
+                return second;
+            }
+
+            set
+            {
+                if (value < 0 || value > 59)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value),
+                    value, $"{nameof(Second)} must be 0-59");
+                }
+
+                second = value;
+            }
+        }
+
+
+
+        public string ToUniversalString() =>
+                   $"{Hour:D2}:{Minute:D2}:{Second:D2}";
+
+
+        public override string ToString() =>
+            $"{((Hour == 0 || Hour == 12) ? 12 : Hour % 12)}:" + $"{Minute:D2}:{Second:D2} {(Hour < 12 ? "AM" : "PM")}";
+
+
+
+        
+
+        public int CompareTo(Time2 newTime2)// setting the time to a new time2 time if the time is the same
+        {
+
+            if (this.Hour == newTime2.Hour && this.Minute != newTime2.Minute )
+            {
+                return this.Minute.CompareTo(newTime2.Minute ); //if the minutes are the same, go to check the seconds
+            }
+            else if (this.Hour == newTime2.Hour && this.Minute == newTime2.Minute && this.Second != newTime2.Minute )
+            {
+                return this.Second.CompareTo(newTime2.Second ); //if the seconds are the same, go to check the hour
+            }
+            else
+                return this.Hour.CompareTo(newTime2.Hour);//compare the hour
+        }
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    public class Time2tz : Time2
+    {
+
+        private string timezone;
+
+
+        public Time2tz(int h, int m, int s, string tz)
+            : base(h, m, s)
+
+        {
+            Timezone = tz;
+        }
+
+
+
+        public Time2tz(Time2tz time)
+
+           : this(time.Hour, time.Minute, time.Second, time.Timezone) { }
+
+
+
+
+        public Time2tz()
+            : base()
+        {
+            Timezone = "CST";
+        }
+
+        
+
+
+
+        public string Timezone
+        {
+            get
+            {
+                return timezone;
+            }
+
+            set
+            {
+                timezone = value;
+            }
+        }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+        
+
+        public string ToUniversalString() =>
+                   $"{Hour:D2}:{Minute:D2}:{Second:D2}";
+
+
+        public override string ToString() =>
+            $"{((Hour == 0 || Hour == 12) ? 12 : Hour % 12)}:" + $"{Minute:D2}:{Second:D2} {(Hour < 12 ? "AM" : "PM")}" + $"{Timezone}";
+
+
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    public class AlarmTime : Time2
+    {
+
+        private int hour;
+        private int minute;
+        private int second;
+        private string text;
+
+
+        public AlarmTime(int Hour, int Minute, int Second, string text)
+            : base(Hour, Minute, Second)
+        {
+            Text = text;
+        }
+
+
+        public string Text //getting and returning am/pm
+        {
+
+            get
+            {
+                return text;
+            }
+
+            set
+            {
+                if ((value) is string)
+                    text = value;
+                else
+                    throw new InvalidCastException("Enter Valid String for Text");
+                
+            }
+        }
+
+
+        public override string ToString() =>
+            $"{((Hour == 0 || Hour == 12) ? 12 : Hour % 12)}:" + $"{Minute:D2}:{Second:D2} {Text}";
+
+    }
+}
