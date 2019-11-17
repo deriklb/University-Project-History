@@ -1,0 +1,328 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using ClassLibrary_1;
+
+namespace AlarmClock
+{
+    public partial class Form1 : Form
+    {
+
+        List<AlarmTime> AlarmList = new List<AlarmTime>();
+        Time2 atime = new Time2();
+        AlarmTime triggertime = new AlarmTime(0,0,0,"");
+        bool AlarmOn = false;
+        string MessagetoFlash;
+        
+
+        public Form1()
+        {
+            InitializeComponent();
+        
+                if (String.IsNullOrEmpty(label11.Text) || String.IsNullOrEmpty(label12.Text) || String.IsNullOrEmpty(label13.Text))
+                {
+                    atime = new Time2(Convert.ToInt32(DateTime.Now.Hour), Convert.ToInt32(DateTime.Now.Minute), Convert.ToInt32(DateTime.Now.Second));
+                    SetCurrentTime(atime);
+
+                }
+        }
+        public void GetCurrentTime(Time2 t)
+        {
+            try
+            {
+                t.Hour = Convert.ToInt32(textBox1.Text);
+                t.Minute = Convert.ToInt32(textBox2.Text);
+                t.Second = Convert.ToInt32(textBox3.Text);
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (InvalidCastException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        public void SetCurrentTime(Time2 t)
+        {
+            try
+            {
+                label11.Text = Convert.ToString(t.Hour);
+                label12.Text = Convert.ToString(t.Minute);
+                label13.Text = Convert.ToString(t.Second);
+                timer1.Interval = 1000;
+                timer1.Start();
+            }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            catch (InvalidCastException ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        public void getAlarmTime(AlarmTime a)
+        {
+            a.Hour = Convert.ToInt32(textBox1.Text);
+            a.Minute = Convert.ToInt32(textBox2.Text);
+            a.Second = Convert.ToInt32(textBox3.Text);
+            a.Text = (textBox4.Text);
+        }
+        private void Snooze()
+        {
+            AlarmOn = false;             //
+            label16.Text = "";           // for these, we set the message to flash nothing and the alarm off
+            MessagetoFlash = "";         //
+
+
+            if(numericUpDown2.Value != 0)
+            {
+                AlarmTime st = new AlarmTime(0, 0, 0, "");                              //
+                st.Hour = triggertime.Hour;                                             //
+                st.Minute = triggertime.Minute + Convert.ToInt32(numericUpDown2.Value); //   for this, if we incrimented the snooze up/down, set the alarm trigger
+                st.Second = triggertime.Second;                                         //   time go to off at the new value and add it to the list.
+                st.Text = triggertime.Text;                                             //
+                AlarmList.Add(st);//\\//\\//\\//\\
+                listBox1.Items.Add(st.ToString());
+                
+
+                if (AlarmList.Count > 1)
+                {
+                    AlarmList.Sort();                 //here, sort the alarm list
+                }
+                numericUpDown2.Value = 0;
+
+
+
+            }
+
+        }
+        //snooze
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Snooze();
+        }
+        //alarm off
+        private void button4_Click(object sender, EventArgs e)
+        {
+            AlarmOn = false;
+            label16.Text = "";
+            MessagetoFlash = "";
+
+        }
+        //set time
+        private void button2_Click(object sender, EventArgs e)
+        {
+            GetCurrentTime(atime);
+            SetCurrentTime(atime);
+            if (numericUpDown1.Value != 0)
+            {
+                Time2 at = new Time2();
+                at.Hour = Convert.ToInt32(numericUpDown1.Value);
+                at.Minute = 0;
+                at.Second = 0;
+                atime.addtime(at);
+                SetCurrentTime(atime);
+                numericUpDown1.Value = 0;
+            }
+        }
+        //alarm
+        private void button1_Click(object sender, EventArgs e)
+        {
+            AlarmTime st = new AlarmTime(0, 0, 0, "");
+            getAlarmTime(st); //get the alarm time
+            AlarmList.Add(st);  //add the alarm time to the list
+
+            if(AlarmList.Count > 1)  //sort the list at that time
+            {
+                AlarmList.Sort();
+            }
+
+            listBox1.Items.Clear(); //clear the previous list to make way for the new sorted list
+
+            foreach (var element in AlarmList)
+            {
+                listBox1.Items.Add(element); //add the new sorted items from the list to the list box
+            }
+        }
+        //label current time
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+        //label alarms
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+        //label time
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+        //hour text
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        //minute text
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        //second text
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        //am/pm text
+        private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+        //ALARM TIMES LIST
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        //hour time label
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+        //minute time label
+        private void label12_Click(object sender, EventArgs e)
+        {
+
+        }
+        //second time label
+        private void label13_Click(object sender, EventArgs e)
+        {
+
+        }
+        //speed control for time
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+        //snooze period incriment
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+        //update time
+        private async Task TimeUpdate()
+        {
+            if (atime.Second <= 58)
+            {
+                atime.Second = atime.Second + 1;
+            }
+
+            else
+            {
+                if (atime.Minute <= 58)
+                {
+                    atime.Minute = atime.Minute + 1;
+                    atime.Second = 0;
+                }
+                else
+                {
+                    if (atime.Hour <= 22)
+                    {
+                        atime.Hour = atime.Hour + 1;
+
+                        atime.Minute = 0;
+                    }
+                    else if (atime.Hour >= 23 && atime.Second >= 59 && atime.Minute >= 59)
+                    {
+                        atime.Hour = 0;
+                    }
+
+                }
+            }
+        }
+        //alarm Trigger
+        private void SetAlarmToTrigger()
+        {
+            if (AlarmList.Count > 0)
+            {
+                foreach (var element in AlarmList)
+                {
+                    if (element.Hour == atime.Hour && element.Minute == atime.Minute && element.Second == atime.Second)
+                    {
+                        triggertime.Hour = element.Hour;
+                        triggertime.Minute = element.Minute;
+                        triggertime.Second = element.Second;
+                        triggertime.Text = element.Text;
+                        MessagetoFlash = "Alarm";
+                        AlarmOn = true;
+
+                    }
+
+                }
+            }
+        }
+
+
+        //timer
+        private async void timer1_Tick(object sender, EventArgs e)
+        {
+
+            SetAlarmToTrigger();
+
+            await Task.Run(() => TimeUpdate());
+
+           if (AlarmOn == false)
+            {
+                SetAlarmToTrigger();
+            }
+            label11.Text = Convert.ToString(atime.Hour);
+            label12.Text = Convert.ToString(atime.Minute);
+            label13.Text = Convert.ToString(atime.Second);
+
+
+            if (AlarmOn == true)
+            {
+                Random r = new Random();
+                int A = r.Next(0, 255);
+                int R = r.Next(0, 255);
+                int G = r.Next(0, 255);
+                int B = r.Next(0, 255);
+                label16.Visible = true;
+                label16.ForeColor = Color.FromArgb(A, R, G, B);
+                label16.Text = MessagetoFlash;
+                SetAlarmToTrigger();
+            } 
+        }
+        //delete
+        private void button5_Click(object sender, EventArgs e)
+        {
+            listBox1.Items.Remove(listBox1.SelectedItem);
+
+        }
+        //flashing alarm
+        private void label16_Click(object sender, EventArgs e)
+        {
+            
+        }
+        //load
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            Timer t = new Timer();
+            t.Interval = 1000;
+            t.Tick += new EventHandler(this.timer1_Tick);
+        }
+
+        private void determinedTheAmountOfTimeForTheSnoozeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
+}
