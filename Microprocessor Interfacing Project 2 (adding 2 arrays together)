@@ -1,0 +1,51 @@
+ArraySz EQU 5
+	AREA asml, CODE
+	ENTRY
+	EXPORT __main
+		
+		
+; Student Name:Derik Trumble
+; Student ID: -------
+
+
+__main
+	ldr r0, =ArraySz
+	adr	r1, DArray
+	bl	SumArray                      ; go to sum array
+stop B stop
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	ALIGN											                        ;;
+DArray	DCW 0xEE2B, 0x56C2, 0xF6AA, 0x247E, 0x7B32  ;;
+	ALIGN											                        ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+SumArray 
+	push	{r2-r12, lr}                ; store values to save them for later on
+	mov r4, #0x00000000               ; to make r4 all zeros
+;;;;;;;;;;;;;;;;;;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+ModArray	
+	ldrh r5, [r1], #2               ; load next value to add
+	adds r4, r5                     ; adding next value to current total
+	sub r0, #1                      ; subtract one value from arraySz pointer
+	cmp r0, #0                      ; see if the value is equal to 0
+	bne ModArray
+	push{r4}                        ; storing value of stack pointer into r4
+	pop	{r0}                        ; loading stack pointer into into r0
+	pop {r2-r12, pc}                ; loading registers with original content
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	END
