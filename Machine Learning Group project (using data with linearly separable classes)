@@ -1,0 +1,69 @@
+# I used  Abu-Mostafa, Yaser S. *Learning from Data: a Short Course*. AMLBooks, 2012. 
+# I also used code from github from a profile by the name of aroques (its a code developed by MIT)
+
+%matplotlib inline
+
+import numpy as np
+import random
+from perceptron_learning import Perceptron
+from perceptron_learning import two_d_vector as tdv
+
+
+def main():
+    bound = 100
+    num_pts = 80
+    num_train_pts = 50
+    perceptron = Perceptron(alpha=0.005)
+    target_fn = np.random.uniform(-10, 10, 3)
+    x = get_random_x(num_pts, bound)
+    x_tr, x_te = x[:num_train_pts, :], x[num_train_pts:, :]
+    y = get_y(x[:, 1:], target_fn)
+    y_tr, y_te = y[:num_train_pts], y[num_train_pts:]   
+    y_te = np.sign(np.dot(x_te, target_fn))      
+        
+    #This is using the perceptron class that was created and making a graph out of it
+
+    print('Non-Linearly Separable Data')
+    perceptron.fit(x_tr, y_train=y_tr)
+    
+    # used from the perceptron pocket class
+    predictions = perceptron.predict(x_te)
+    print_error(predictions, y_te)    #printing the amount of error
+    perceptron.visualize_training()
+    
+    # print the error
+    
+def print_error(predictions, y_te):
+    error = np.sum(np.not_equal(predictions, y_te)) / y_te.shape[0]
+    print('{0:28s}: {1:.2f}%'.format('Eout error', error * 100))
+
+##############################################################################################################################    
+    
+
+    # This produces the graph of points with the lineraly seperable points
+    
+def get_y(training_pts, w_target):
+    
+    y = np.random.choice([-1, 1], training_pts.shape[0])
+    
+    for i, pt in enumerate(training_pts):
+        pct_chance = .75
+        pt_above_line = tdv.pt_above_line(pt, w_target)
+        
+        # This calls for the object to be classified as either a 1 or a -1
+        if pt_above_line and random.random() < pct_chance:
+            y[i] = 1
+        if not pt_above_line and random.random() < pct_chance:
+            y[i] = -1
+    return y
+
+
+#getting random numbers for inputs
+
+def get_random_x(num_points, bound):
+    pts = get_random_pts(num_points, bound)
+    x = np.insert(pts, 0, 1, axis=1)  # Let x0 equal 1
+    return x
+def get_random_pts(num_points, bound):
+    return np.random.randint(-bound, bound, size=(num_points, 2))
+main()
